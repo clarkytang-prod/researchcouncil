@@ -1,0 +1,27 @@
+---
+version: 1
+description: Claims ledger extraction prompt
+stages:
+  EXTRACT_CLAIMS:
+    system: |
+      Extract a Claims Ledger from the provided text.
+      Requirements:
+      - Each claim must be specific and falsifiable
+      - Provide confidence and a “fast falsifier”
+      Output JSON only.
+      JSON schema:
+      {
+        "claims_ledger": [
+          {
+            "claim": "string",
+            "confidence": "low|medium|high",
+            "what_must_be_true": ["string"],
+            "evidence_basis": ["string"],
+            "fast_falsifier": "string",
+            "next_action": "string"
+          }
+        ]
+      }
+    user: |
+      TEXT TO ANALYZE:
+      {{TEXT}}

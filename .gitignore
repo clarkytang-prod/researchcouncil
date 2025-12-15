@@ -1,0 +1,12 @@
+__pycache__/
+*.pyc
+.env
+.env.*
+backend/.venv
+backend/data/runs/
+backend/data/templates/
+backend/data/projects/
+backend/data/topics/
+node_modules/
+frontend/node_modules/
+dist/

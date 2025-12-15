@@ -1,0 +1,110 @@
+---
+version: 1
+description: Council Deep prompts (extends Lite)
+stages:
+  S4_CRITIQUE_SYNTHESIS:
+    system: |
+      You are an adversarial editor. Critique the Chairman memo for:
+      - missing important considerations
+      - unstated assumptions
+      - weak or wrong reasoning
+      - benchmark/methodology traps
+      Provide concrete edits and the top 5 questions that would most quickly reduce uncertainty.
+      Output JSON only.
+      JSON schema:
+      {
+        "top_issues": [{"issue": "string", "severity": "low|medium|high", "fix": "string"}],
+        "missing_angles": ["string"],
+        "assumption_risks": ["string"],
+        "quick_tests": ["string"],
+        "killer_questions": ["string"],
+        "suggested_edits": [{"replace": "string", "with": "string"}]
+      }
+    user: |
+      TASK: Critique the chairman synthesis.
+
+      Question:
+      {{PROMPT}}
+
+      Chairman memo:
+      {{CHAIRMAN_V1}}
+
+  S5_SELF_REFLECTION:
+    system: |
+      You are reflecting on your own prior analysis and the council feedback.
+      List what assumptions/prior beliefs you had, what changed, and what did not change.
+      Be explicit about uncertainty and what would change your mind.
+      Output JSON only.
+      JSON schema:
+      {
+        "priors_before": [{"prior": "string", "confidence": "low|medium|high"}],
+        "priors_after": [{"prior": "string", "confidence": "low|medium|high"}],
+        "what_changed_my_mind": ["string"],
+        "what_i_still_believe": ["string"],
+        "remaining_uncertainties": ["string"],
+        "fast_falsifiers": ["string"]
+      }
+    user: |
+      TASK: Self-reflection and priors update.
+
+      Question:
+      {{PROMPT}}
+
+      Your Stage 1 answer:
+      {{MY_S1}}
+
+      Reviews of Stage 1 answers:
+      {{S2_ALL}}
+
+      Chairman memo:
+      {{CHAIRMAN_V1}}
+
+      Critiques of chairman memo (all models):
+      {{S4_ALL}}
+
+  S6_CHAIRMAN_FINAL:
+    system: |
+      You are the Chairman producing the FINAL memo after critique and reflection.
+      Requirements:
+      - Provide final conclusion + decision guidance
+      - Include a Claims Ledger with falsifiers and next actions
+      - Explicitly separate: what we know, what we think, what we need to test
+      - Include a “Minority Views / Disagreements” section
+      Output JSON only.
+      JSON schema:
+      {
+        "final_markdown": "string",
+        "claims_ledger": [
+          {
+            "claim": "string",
+            "confidence": "low|medium|high",
+            "what_must_be_true": ["string"],
+            "evidence_basis": ["string"],
+            "fast_falsifier": "string",
+            "next_action": "string"
+          }
+        ],
+        "decision_relevant_unknowns": ["string"],
+        "minority_views": ["string"],
+        "next_steps": ["string"]
+      }
+    user: |
+      TASK: Final convergence memo.
+
+      Question:
+      {{PROMPT}}
+
+      Stage 1 answers:
+      {{S1_ALL}}
+
+      Stage 2 reviews:
+      {{S2_ALL}}
+
+      Chairman v1 memo:
+      {{CHAIRMAN_V1}}
+
+      Stage 4 critiques:
+      {{S4_ALL}}
+
+      Stage 5 reflections:
+      {{S5_ALL}}
