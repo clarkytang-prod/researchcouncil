@@ -36,6 +36,19 @@ npm install
 npm run dev
 ```
 
+## Deploying the frontend to Vercel (monorepo)
+
+Vercel expects the Vite frontend to be the project root. A `vercel.json` is included to point Vercel at `frontend/` and build to
+`dist` with SPA-style rewrites.
+
+1) Push your repo to GitHub/GitLab and import the project into Vercel.
+2) When prompted, choose the root directory from `vercel.json` automatically (or set it manually to `frontend`).
+3) Deploy. The generated static build will serve the React app; client-side routes are handled via the catch-all rewrite in `vercel
+.json`.
+
+> Note: The FastAPI backend is not hosted on Vercel. Run it separately (e.g., Fly.io, Render, Railway, or a VPS) and configure the
+> frontend to point to that base URL via environment variables if you wire the API calls to production.
+
 ## Council runs
 
 - POST `/api/runs` with `{ "prompt": "...", "pipeline": "lite|deep", "mode": "live|overnight" }` to create a run.
